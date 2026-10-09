@@ -1,0 +1,8 @@
+## Interface: 30300
+## Title: DustCollector
+## Notes: Auto-disenchants (or greeds) group loot rolls up to a chosen rarity. Use /dc for commands.
+## Author: You
+## Version: 1.0
+## SavedVariablesPerCharacter: DustCollectorDB
+
+DustCollector.lua
