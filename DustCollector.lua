@@ -58,16 +58,25 @@ end
 local function HandleRoll(rollID)
     if not db or not db.enabled then return end
 
-    local _, _, _, quality, _, _, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
+    local _, itemName, _, quality, _, _, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
     if not quality or quality > db.maxQuality then return end
 
+    local rollType, action
     if canDisenchant then
-        pending[rollID] = true
-        RollOnLoot(rollID, ROLL_DISENCHANT)
+        rollType, action = ROLL_DISENCHANT, "rolled Disenchant on"
     elseif canGreed then
-        pending[rollID] = true
-        RollOnLoot(rollID, ROLL_GREED)
+        rollType, action = ROLL_GREED, "rolled Greed on"
+    else
+        return
     end
+
+    -- Fetch the link before rolling: RollOnLoot fires CANCEL_LOOT_ROLL
+    -- synchronously and roll data may be gone afterwards.
+    local itemText = GetLootRollItemLink(rollID) or itemName or "?"
+
+    pending[rollID] = true
+    Print(action .. itemText)
+    RollOnLoot(rollID, rollType)
 end
 
 ------------------------------------------------------------
