@@ -1,7 +1,7 @@
 # DustCollector
 
 ![WoW 3.3.5a (WotLK)](https://img.shields.io/badge/WoW-3.3.5a%20WotLK-a335ee?style=flat-square)
-![Version](https://img.shields.io/badge/version-1.0-6f42c1?style=flat-square)
+![Version](https://img.shields.io/badge/version-1.2-6f42c1?style=flat-square)
 
 [Features](#features) • [Installation](#installation) • [Usage](#usage) • [How it works](#how-it-works) • [FAQ](#faq)
 

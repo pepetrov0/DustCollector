@@ -2,7 +2,7 @@
 ## Title: Dust Collector
 ## Notes: Auto-disenchants (or greeds) group loot rolls up to a chosen rarity. Use /dc for commands.
 ## Author: You
-## Version: 1.0
+## Version: 1.2
 ## SavedVariablesPerCharacter: DustCollectorDB
 
 DustCollector.lua

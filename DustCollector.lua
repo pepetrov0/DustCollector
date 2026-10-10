@@ -28,6 +28,7 @@ local ROLL_DISENCHANT  = 3
 
 local db
 local pending = {} -- rollIDs that we rolled on ourselves
+local rolling = nil -- true while RollOnLoot() is executing, see HandleRoll
 
 local function Print(msg)
     DEFAULT_CHAT_FRAME:AddMessage(PREFIX .. msg)
@@ -74,9 +75,19 @@ local function HandleRoll(rollID)
     -- synchronously and roll data may be gone afterwards.
     local itemText = GetLootRollItemLink(rollID) or itemName or "?"
 
+    -- Events fired by RollOnLoot dispatch synchronously, so set the flag first
+    -- and guard the handler: without it, the CANCEL_LOOT_ROLL fired by our own
+    -- roll would erase pending[rollID] before the bind prompt ever gets seen.
     pending[rollID] = true
+    rolling = true
     Print(action .. itemText)
     RollOnLoot(rollID, rollType)
+    rolling = nil
+
+    if not GetLootRollItemInfo(rollID) then
+        -- No bind prompt was triggered: the roll resolved already, drop the flag
+        pending[rollID] = nil
+    end
 end
 
 ------------------------------------------------------------
@@ -98,6 +109,7 @@ end
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("START_LOOT_ROLL")
 frame:RegisterEvent("CONFIRM_LOOT_ROLL")
+frame:RegisterEvent("CONFIRM_DISENCHANT_ROLL") -- disenchant prompts use this one
 frame:RegisterEvent("CANCEL_LOOT_ROLL")
 
 frame:SetScript("OnEvent", function(self, event, arg1, arg2)
@@ -117,16 +129,24 @@ frame:SetScript("OnEvent", function(self, event, arg1, arg2)
         queue[#queue + 1] = arg1
         self:SetScript("OnUpdate", OnUpdate)
 
-    elseif event == "CONFIRM_LOOT_ROLL" then
+    elseif event == "CONFIRM_LOOT_ROLL" or event == "CONFIRM_DISENCHANT_ROLL" then
+        -- A roll on a bind-on-pickup item is awaiting confirmation. Greed
+        -- prompts fire CONFIRM_LOOT_ROLL, disenchant prompts fire
+        -- CONFIRM_DISENCHANT_ROLL (FrameXML/UIParent.lua: both show the
+        -- StaticPopupDialogs["CONFIRM_LOOT_ROLL"] popup).
         -- Only auto-confirm bind prompts for rolls we made ourselves
         if pending[arg1] then
             ConfirmLootRoll(arg1, arg2)
-            StaticPopup_Hide("CONFIRM_LOOT_ROLL")
+            StaticPopup_Hide("CONFIRM_LOOT_ROLL", arg1) -- arg1 == dialog.data
             pending[arg1] = nil
         end
 
     elseif event == "CANCEL_LOOT_ROLL" then
-        pending[arg1] = nil
+        -- Ignore the synchronous cancel caused by our own RollOnLoot call so
+        -- the flag survives until the bind prompt fires (or resolves).
+        if not rolling then
+            pending[arg1] = nil
+        end
     end
 end)
 
