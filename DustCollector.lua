@@ -63,9 +63,9 @@ local function HandleRoll(rollID)
 
     local rollType, action
     if canDisenchant then
-        rollType, action = ROLL_DISENCHANT, "rolled Disenchant on"
+        rollType, action = ROLL_DISENCHANT, "Rolled disenchant on"
     elseif canGreed then
-        rollType, action = ROLL_GREED, "rolled Greed on"
+        rollType, action = ROLL_GREED, "Rolled greed on"
     else
         return
     end
