@@ -51,7 +51,7 @@ Everything is done from the chat console; there's no configuration screen.
 | Command | Description |
 | --- | --- |
 | `/dc on`, `/dc off`, `/dc toggle` | Enable, disable or toggle auto-rolling |
-| `/dc rarity <quality>` | Set the highest item quality to roll on (see below) |
+| `/dc <quality>` | Set the highest item quality to roll on (see below) |
 | `/dc status` | Show the current settings |
 | `/dc` | Same as `/dc status`, plus the command list |
 
@@ -70,12 +70,12 @@ Everything is done from the chat console; there's no configuration screen.
 The addon rolls on items **at or below** the configured quality and never touches anything above it. The default threshold is `uncommon`, so white and green items are rolled while blues and purples are left to you:
 
 ```text
-/dc rarity uncommon   – grays, whites and greens are handled (default)
-/dc rarity rare       – blues and below are handled
-/dc rarity epic       – every eligible roll is handled
+/dc uncommon   – grays, whites and greens are handled (default)
+/dc rare       – blues and below are handled
+/dc epic       – every eligible roll is handled
 ```
 
-Quality names and their color aliases (`gray`, `white`, `green`, `blue`, `purple`) and the numeric values (`0`–`4`) are all accepted.
+Quality names and their color aliases (`gray`, `white`, `green`, `blue`, `purple`) and the numeric values (`0`–`4`) are all accepted — `/dc blue` is the same as `/dc 3`.
 
 ## How it works
 

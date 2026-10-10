@@ -162,8 +162,29 @@ end
 local function PrintHelp()
     Print("commands:")
     DEFAULT_CHAT_FRAME:AddMessage("  /dc on | off | toggle  - enable or disable")
-    DEFAULT_CHAT_FRAME:AddMessage("  /dc rarity <poor|common|uncommon|rare|epic>  (or 0-4)")
+    DEFAULT_CHAT_FRAME:AddMessage("  /dc <rarity>  - set max quality (e.g. /dc blue or /dc 3)")
     DEFAULT_CHAT_FRAME:AddMessage("  /dc status  - show current settings")
+end
+
+local function SetRarity(value)
+    if value == "" then
+        Print("missing rarity. Use poor, common, uncommon, rare, epic (or 0-4), e.g. /dc blue.")
+        return
+    end
+
+    local q = QUALITY_ALIASES[value]
+    if q == nil then
+        local n = tonumber(value)
+        if n and QUALITY_NAMES[n] then q = n end
+    end
+
+    if q == nil then
+        Print("unknown rarity '" .. value .. "'. Use poor, common, uncommon, rare, epic (or 0-4).")
+        return
+    end
+
+    db.maxQuality = q
+    PrintStatus()
 end
 
 SLASH_DUSTCOLLECTOR1 = "/dustcollector"
@@ -187,25 +208,15 @@ SlashCmdList["DUSTCOLLECTOR"] = function(msg)
         db.enabled = not db.enabled
         PrintStatus()
 
-    elseif cmd == "rarity" or cmd == "quality" then
-        local q = QUALITY_ALIASES[arg]
-        if q == nil then
-            local n = tonumber(arg)
-            if n and QUALITY_NAMES[n] then q = n end
-        end
-
-        if q == nil then
-            Print("unknown rarity '" .. arg .. "'. Use poor, common, uncommon, rare, epic (or 0-4).")
-        else
-            db.maxQuality = q
-            PrintStatus()
-        end
-
-    elseif cmd == "status" or cmd == "" then
+    elseif cmd == "status" then
         PrintStatus()
-        if cmd == "" then PrintHelp() end
+
+    elseif cmd == "" then
+        PrintStatus()
+        PrintHelp()
 
     else
-        PrintHelp()
+        -- /dc blue, /dc 3, ...
+        SetRarity(cmd)
     end
 end
