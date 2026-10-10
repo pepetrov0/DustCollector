@@ -56,8 +56,6 @@ end
 -- Rolling
 ------------------------------------------------------------
 local function HandleRoll(rollID)
-    pending[rollID] = nil -- clear any stale entry from an earlier roll
-
     if not db or not db.enabled then return end
 
     local _, _, _, quality, _, _, canGreed, canDisenchant = GetLootRollItemInfo(rollID)
@@ -76,6 +74,18 @@ end
 -- Events
 ------------------------------------------------------------
 local frame = CreateFrame("Frame")
+
+local queue = {} -- rollIDs waiting to be handled on the next frame
+
+local function OnUpdate(self)
+    self:SetScript("OnUpdate", nil)
+    local ids = queue
+    queue = {}
+    for i = 1, #ids do
+        HandleRoll(ids[i])
+    end
+end
+
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("START_LOOT_ROLL")
 frame:RegisterEvent("CONFIRM_LOOT_ROLL")
@@ -89,7 +99,14 @@ frame:SetScript("OnEvent", function(self, event, arg1, arg2)
         end
 
     elseif event == "START_LOOT_ROLL" then
-        HandleRoll(arg1)
+        pending[arg1] = nil -- clear any stale entry from an earlier roll
+        -- Don't roll inside this handler: rolling makes the client fire
+        -- CANCEL_LOOT_ROLL immediately, and if that happens before other
+        -- addons (e.g. ElvUI's roll bars) have processed START_LOOT_ROLL,
+        -- they never see the cancel and their frame stays up forever.
+        -- Defer to the next frame instead.
+        queue[#queue + 1] = arg1
+        self:SetScript("OnUpdate", OnUpdate)
 
     elseif event == "CONFIRM_LOOT_ROLL" then
         -- Only auto-confirm bind prompts for rolls we made ourselves
