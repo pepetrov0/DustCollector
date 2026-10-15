@@ -1,6 +1,6 @@
 local ADDON_NAME = ...
 
-local PREFIX = "|cffc8a2c8DustCollector|r: "
+local PREFIX = "|cffc8a2c8Dust Collector|r: "
 
 local DEFAULTS = {
     enabled    = false,

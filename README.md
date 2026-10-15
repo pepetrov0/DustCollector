@@ -1,4 +1,4 @@
-# DustCollector
+# Dust Collector
 
 ![WoW 3.3.5a (WotLK)](https://img.shields.io/badge/WoW-3.3.5a%20WotLK-a335ee?style=flat-square)
 ![Version](https://img.shields.io/badge/version-1.2-6f42c1?style=flat-square)
@@ -7,7 +7,7 @@
 
 Turn unwanted group loot into enchanting dust, automatically.
 
-**DustCollector** is a tiny World of Warcraft (WotLK 3.3.5) addon that rolls **disenchant** — or **greed** when disenchanting isn't available — on group loot rolls up to a rarity you choose, while leaving anything more valuable for you to decide. Handy for dungeon clears and farm runs where the loot rolls pile up.
+**Dust Collector** is a tiny World of Warcraft (WotLK 3.3.5) addon that rolls **disenchant** — or **greed** when disenchanting isn't available — on group loot rolls up to a rarity you choose, while leaving anything more valuable for you to decide. Handy for dungeon clears and farm runs where the loot rolls pile up.
 
 ## Features
 
@@ -19,14 +19,14 @@ Turn unwanted group loot into enchanting dust, automatically.
 
 ## Installation
 
-DustCollector targets the WoW 3.3.5a client (interface `30300`).
+Dust Collector targets the WoW 3.3.5a client (interface `30300`).
 
 1. In your WoW installation, make sure the `Interface/AddOns` folder exists.
 2. Put the addon files inside a `DustCollector` folder there, for example by cloning this repository directly:
    ```bash
    git clone <your-repo-url> DustCollector
    ```
-3. Start the client and enable **DustCollector** in the AddOns list on the character selection screen (use `/reload` if you're already logged in).
+3. Start the client and enable **Dust Collector** in the AddOns list on the character selection screen (use `/reload` if you're already logged in).
 
 The result should look like this:
 
@@ -79,18 +79,18 @@ Quality names and their color aliases (`gray`, `white`, `green`, `blue`, `purple
 
 ## How it works
 
-DustCollector reacts to the standard group loot roll window:
+Dust Collector reacts to the standard group loot roll window:
 
 1. When a roll starts, it checks the item quality against your threshold and ignores anything above it.
 2. It rolls **disenchant** when that option is available, otherwise it falls back to **greed**.
 3. Bind-on-pickup items ask for confirmation before such a roll; the addon auto-confirms only the prompts for rolls it initiated — your manual rolls are never touched.
 
 > [!NOTE]
-> The disenchant roll option is only offered by the client when a player with sufficient enchanting skill is in the group. When it isn't, DustCollector simply greeds instead.
+> The disenchant roll option is only offered by the client when a player with sufficient enchanting skill is in the group. When it isn't, Dust Collector simply greeds instead.
 
 ## FAQ
 
-**DustCollector isn't rolling anything — why?**
+**Dust Collector isn't rolling anything — why?**
 It ships disabled. Run `/dc on` and check `/dc status` to confirm it's `ON`.
 
 **Why is it greeding instead of disenchanting?**
